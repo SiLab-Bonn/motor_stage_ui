@@ -1,11 +1,11 @@
+from motor_stage_ui.motor_controller import MotorController
+from motor_stage_ui import logger
+
+import yaml
+import logging
 from PyQt5.QtCore import QSize, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QLabel
 import sys
-from motor_controller import MotorController
-from pint import UnitRegistry
-import yaml
-import logger
-import logging
 
 class MainWindow(QMainWindow):
     def __init__(self, config_path):
@@ -18,7 +18,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Motor Stage")
         self.setFixedSize(QSize(1400, 500))
 
-        self.ureg = UnitRegistry()
         self.motor = MotorController()
 
         timer = QTimer(self)
@@ -133,7 +132,7 @@ class MainWindow(QMainWindow):
         move_back.setFixedSize(100, 30)
         move_back.setIconSize(QSize(40, 40))
         move_back.setGeometry(200, (address-1)*30+20, 40, 40)
-        move_back.clicked.connect(lambda: self.move_back_clicked(address))
+        move_back.clicked.connect(lambda: self.move_back_clicked(address, unit, stage, step_size))
 
         position = QPushButton(text='Pos.', parent=self)
         position.setFixedSize(100, 30)
@@ -145,7 +144,7 @@ class MainWindow(QMainWindow):
         move_ahead.setFixedSize(100, 30)
         move_ahead.setIconSize(QSize(40, 40))
         move_ahead.setGeometry(400, (address-1)*30+20, 40, 40)
-        move_ahead.clicked.connect(lambda: self.move_ahead_clicked(address))
+        move_ahead.clicked.connect(lambda: self.move_ahead_clicked(address, unit, stage, step_size))
 
         abort = QPushButton(text='abort', parent=self)
         abort.setFixedSize(100, 30)
@@ -196,11 +195,11 @@ class MainWindow(QMainWindow):
     def init_clicked(self, address):
         self.motor.init_motor(address)
 
-    def move_back_clicked(self, address):
-        self.motor.move_relative(address, value=-10000)
+    def move_back_clicked(self, address, unit, stage, step_size):
+        self.motor.move_relative(address, '-1', unit, stage, step_size)
 
-    def move_ahead_clicked(self, address):
-        self.motor.move_relative(address, value=10000)
+    def move_ahead_clicked(self, address, unit, stage, step_size):
+        self.motor.move_relative(address, '1', unit, stage, step_size)
 
     def abort_clicked(self, address):
         self.motor.abort(address)
@@ -212,49 +211,13 @@ class MainWindow(QMainWindow):
         self.motor.go_home(address)
 
     def set_position_abs_clicked(self, address, textbox, unit, stage, step_size):
-        try:
-            if textbox != '':
-                if stage == 'translation':
-                    try:
-                        pos = self.ureg(textbox).to('um').magnitude/step_size 
-                    except:
-                        pos = self.ureg(textbox + unit).to('um').magnitude/step_size 
-                    self.motor.move_to_position(address, int(pos))
-                if stage == 'rotation':
-                    try:
-                        pos = self.ureg(textbox).to('deg').magnitude/step_size 
-                    except:
-                        pos = self.ureg(textbox + unit).to('deg').magnitude/step_size 
-                    self.motor.move_to_position(address, int(pos))
-        except:
-            self.log.warning('Wrong Input')
+        self.motor.move_to_position(address, textbox, unit, stage, step_size)
 
     def set_position_rel_clicked(self, address, textbox, unit, stage, step_size):
-        try:
-            if textbox != '':
-                if stage == 'translation':
-                    try:
-                        pos = self.ureg(textbox).to('um').magnitude/step_size 
-                    except:
-                        pos = self.ureg(textbox + unit).to('um').magnitude/step_size 
-                    self.motor.move_relative(address, int(pos))
-                if stage == 'rotation':
-                    try:
-                        pos = self.ureg(textbox).to('deg').magnitude/step_size 
-                    except:
-                        pos = self.ureg(textbox + unit).to('deg').magnitude/step_size 
-                    self.motor.move_relative(address, int(pos))
-        except:
-            self.log.warning('Wrong Input')
+        self.motor.move_relative(address, textbox, unit, stage, step_size)
         
-
     def get_position_clicked(self, address, unit, stage, step_size):
-        if stage == 'translation':
-            pos = self.motor.get_position(address)*step_size * self.ureg.micrometer
-            return '%.3f'%(pos.to(unit).magnitude)
-        if stage == 'rotation':
-            pos = self.motor.get_position(address)*step_size * self.ureg.deg
-            return '%.3f'%(pos.to(unit).magnitude)
+        return self.motor.get_position(address, unit, stage, step_size)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
