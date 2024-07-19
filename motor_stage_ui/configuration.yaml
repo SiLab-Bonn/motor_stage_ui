@@ -1,14 +1,15 @@
 
 # Define the connected stages here:
+#
 # name:
-#   stage: define stage typus 'rotation', 'translation'
-#   address: set with dip switches
-#   step_size: depends on the design specifics of the hardware (stage and powering), check 'Design resolution' in e.q.: 
-#             https://www.pi-usa.us/fileadmin/user_upload/physik_instrumente/files/CAT/PI-CAT132E-Precision-Positioning-and-Motion-Control-Web.pdf
-#             set in um for translation stage and in deg for rotational stage
-#             M-038.DG rotational stage:   step_size=0.59 urad / 34*10**(-6) deg
-#             M-403.6DG translation stage: step_size=0.018 um
-#   unit: set output unit and default input unit 
+#   stage:      define stage typus 'rotation', 'translation'
+#   address:    set with dip switches
+#   step_size:  depends on the design specifics of the hardware (stage and powering), check 'Design resolution' in e.g.: 
+#               https://www.pi-usa.us/fileadmin/user_upload/physik_instrumente/files/CAT/PI-CAT132E-Precision-Positioning-and-Motion-Control-Web.pdf
+#               set in um for translation stage and in deg for rotational stage
+#               M-038.DG rotational stage:   step_size=0.59 urad / 34*10**(-6) deg
+#               M-403.6DG translation stage: step_size=0.018 um
+#   unit:       set output unit and default input unit 
 
 rot:
   stage: rotation
@@ -19,5 +20,11 @@ rot:
 x_axis:
   stage: translation
   address: 2
+  step_size: 0.018
+  unit: mm
+
+y_axis:
+  stage: translation
+  address: 3
   step_size: 0.018
   unit: mm

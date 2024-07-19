@@ -7,6 +7,13 @@ from PyQt5.QtCore import QSize, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QLabel
 import sys
 
+
+"""
+    
+GUI for the motor stage
+
+"""
+
 class MainWindow(QMainWindow):
     def __init__(self, config_path):
         super().__init__()
@@ -40,15 +47,30 @@ class MainWindow(QMainWindow):
         timer.start(200) # position update timer in ms
         self.labels()
 
-    def position_setting(self, address=1, unit='mm', stage='translation', step_size=0.2):
+    def position_setting(self, address=1, unit='mm', stage='translation', step_size=0.02):
+        """Button display of the current position of the motor stage
+
+        Args:
+            address (int, optional): Address of the motorstage. Defaults to 1.
+            unit (str, optional): Unit of output position. Defaults to 'mm'.
+            stage (str, optional): Stage type. Defaults to 'translation'.
+            step_size (float, optional): Step size of the motorstage in deg or um. Defaults to 0.2.
+
+        Returns:
+            str: Position of the motor stage in the given units
+        """
         position = QPushButton(text='Pos.', parent=self)
         position.setFixedSize(100, 30)
         position.setIconSize(QSize(40, 40))
         position.setGeometry(300, (address-1)*30+20, 40, 40)
         position.clicked.connect(lambda: position.setText((self.get_position_clicked(address, unit, stage, step_size))))
         return position
+    
+    """ Draw GUI """
 
     def labels(self):
+        """Draws lables above motorstage buttons.
+        """
         label = QLabel('Motor', self)
         label.setAlignment(Qt.AlignCenter)
         label.resize(100, 20)  
@@ -115,6 +137,15 @@ class MainWindow(QMainWindow):
         label.move(1200, 0)
 
     def motor_gui(self, address=1, unit='mm', stage='translation', step_size=0.2, name=1):
+        """Draws buttons of the motorstage
+
+        Args:
+            address (int, optional): Address of the motorstage. Defaults to 1.
+            unit (str, optional): Unit of output position. Defaults to 'mm'.
+            stage (str, optional): Stage type. Defaults to 'translation'.
+            step_size (float, optional): Step size of the motorstage in deg or um. Defaults to 0.2.
+            name (int, optional): Name of the motorstage. Defaults to 1.
+        """
         name = QLineEdit(text=name, parent=self)
         name.move(0, (address-1)*30+20)
         name.resize(100, 30)
@@ -192,6 +223,8 @@ class MainWindow(QMainWindow):
         notes.resize(200, 30)
         notes.setAlignment(Qt.AlignCenter) 
 
+    """ Button actions when clicked  """
+
     def init_clicked(self, address):
         self.motor.init_motor(address)
 
@@ -219,10 +252,15 @@ class MainWindow(QMainWindow):
     def get_position_clicked(self, address, unit, stage, step_size):
         return self.motor.get_position(address, unit, stage, step_size)
 
-if __name__ == '__main__':
+
+def main():
     app = QApplication(sys.argv)
 
-    window = MainWindow('configuration.yaml')
+    window = MainWindow('motor_stage_ui/configuration.yaml')
     window.show()
 
     app.exec()
+
+
+if __name__ == '__main__':
+    main()
