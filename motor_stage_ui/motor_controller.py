@@ -6,6 +6,7 @@ import os
 from pint import UnitRegistry
 import logging
 import time
+import asyncio
 
 """
 
@@ -95,18 +96,8 @@ class MotorController(object):
         """
         try:
             if amount != '' and stage in ['translation', 'rotation']:
-                if stage == 'translation':
-                    try:
-                        pos = self.ureg(amount).to('um').magnitude/step_size 
-                    except:
-                        pos = self.ureg(amount + unit).to('um').magnitude/step_size 
-                    self._move_to_position(address, int(pos))
-                if stage == 'rotation':
-                    try:
-                        pos = self.ureg(amount).to('deg').magnitude/step_size 
-                    except:
-                        pos = self.ureg(amount + unit).to('deg').magnitude/step_size 
-                    self._move_to_position(address, int(pos))
+                pos = self._calculate_value(amount, unit, stage, step_size)
+                self._move_to_position(address, int(pos))
             else:
                 self.log.warning('Invalid stage type')
         except:
@@ -127,18 +118,8 @@ class MotorController(object):
         """
         try:
             if amount != '' and stage in ['translation', 'rotation']:
-                if stage == 'translation':
-                    try:
-                        pos = self.ureg(amount).to('um').magnitude/step_size 
-                    except:
-                        pos = self.ureg(amount + unit).to('um').magnitude/step_size 
-                    self._move_relative(address, int(pos))
-                if stage == 'rotation':
-                    try:
-                        pos = self.ureg(amount).to('deg').magnitude/step_size 
-                    except:
-                        pos = self.ureg(amount + unit).to('deg').magnitude/step_size 
-                    self._move_relative(address, int(pos))
+                pos = self._calculate_value(amount, unit, stage, step_size)
+                self._move_relative(address, int(pos))
             else:
                 self.log.warning('Invalid stage type')
         except:
@@ -193,6 +174,19 @@ class MotorController(object):
             address (int): Address of the motorstage
         """
         return self.dut["MotorStage"].get_position(address=address)
+    
+    def _calculate_value(self, amount, unit, stage, step_size):
+        if stage == 'translation':
+            try:
+                pos = self.ureg(amount).to('um').magnitude/step_size 
+            except:
+                pos = self.ureg(amount + unit).to('um').magnitude/step_size 
+        if stage == 'rotation':
+            try:
+                pos = self.ureg(amount).to('deg').magnitude/step_size 
+            except:
+                pos = self.ureg(amount + unit).to('deg').magnitude/step_size 
+        return pos
 
 if __name__ == '__main__':
     x = MotorController()
