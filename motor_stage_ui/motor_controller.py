@@ -35,10 +35,12 @@ class MotorController(object):
         self.dut["MotorStage"].motor_on(address=address)
         time.sleep(0.1)
         self.dut["MotorStage"]._write_command('RT', address=address)
-        # time.sleep(0.1)
-        # self.dut["MotorStage"].LL(address=ad) # set logic
         time.sleep(0.1)
-        self.dut["MotorStage"].motor_command('SV100000', address=address) #set motor stage velocity
+        # self.dut["MotorStage"].LL(address=address) # set logic
+        # time.sleep(0.1)
+        # self.dut["MotorStage"]._write_command('HL', address=address) # set logic
+        # time.sleep(0.1)
+        self.dut["MotorStage"]._write_command('SV100000', address=address) #set motor stage velocity
         time.sleep(0.1)
         self.log.info('Inititialized motorstage with address: %i' %address)
 

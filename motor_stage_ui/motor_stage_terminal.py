@@ -1,5 +1,7 @@
 from motor_stage_ui.motor_controller import MotorController as MC 
+import motor_stage_ui
 
+import os
 import click
 import yaml
 
@@ -20,8 +22,10 @@ def motor(conf):
         Args:
             conf (str): Needs path to configuration yaml. This path is convertet into a click object and passed to the individual functions.
     """
+
     conf.ensure_object(dict)
-    config_path = 'motor_stage_ui/configuration.yaml'
+    path = os.path.dirname(motor_stage_ui.__file__)
+    config_path = path + '/configuration.yaml'
     with open(config_path, "r") as file:
         conf.obj['CONF'] = yaml.full_load(file)
 

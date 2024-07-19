@@ -10,7 +10,10 @@ setup(
     include_package_data=True,
     install_requires=[
         'Click',
-        'pint'
+        'pint',
+        'coloredlogs',
+        'PyQt5',
+        'pyserial',
     ],
     entry_points={
         'console_scripts': [

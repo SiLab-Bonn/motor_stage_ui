@@ -1,12 +1,13 @@
 from motor_stage_ui.motor_controller import MotorController
 from motor_stage_ui import logger
+import motor_stage_ui
 
 import yaml
 import logging
 from PyQt5.QtCore import QSize, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QLabel
 import sys
-
+import os
 
 """
     
@@ -34,6 +35,7 @@ class MainWindow(QMainWindow):
             address = self.conf[motor]['address']
             step_size = eval(str(self.conf[motor]['step_size']))
             unit = self.conf[motor]['unit']
+            # self.init_clicked(address)
             self.motor_gui(address, unit=unit, stage=stage, step_size=step_size, name=motor)
 
             self.pos.append(self.position_setting(address, unit=unit, stage=stage, step_size=step_size))
@@ -256,7 +258,8 @@ class MainWindow(QMainWindow):
 def main():
     app = QApplication(sys.argv)
 
-    window = MainWindow('motor_stage_ui/configuration.yaml')
+    path = os.path.dirname(motor_stage_ui.__file__)
+    window = MainWindow(path + '/configuration.yaml')
     window.show()
 
     app.exec()

@@ -5,8 +5,6 @@ Motor stages can be arranged in a daisy chains and are controlled using [basil](
 
 ## Installation
 
-Requires [basil](https://github.com/SiLab-Bonn/basil).
-
 ```bash
 git clone https://github.com/SiLab-Bonn/basil.git
 cd basil
