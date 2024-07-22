@@ -1,4 +1,5 @@
 # Motor stage UI
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Offers a terminal and graphical user interface for the Mercury motor controller.
 Motor stages can be arranged in a daisy chains and are controlled via [basil](https://github.com/SiLab-Bonn/basil).
