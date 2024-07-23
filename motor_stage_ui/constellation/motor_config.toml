@@ -1,0 +1,13 @@
+[satellites]
+
+[satellites.x_axis]
+stage = 'translation'
+address = 1
+step_size = 0.018
+unit = 'mm'
+
+[satellites.y_axis]
+stage = 'translation'
+address = 2
+step_size = 0.018
+unit = 'mm'

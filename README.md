@@ -2,7 +2,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Offers a terminal and graphical user interface for the Mercury motor controller.
-Motor stages can be arranged in a daisy chains and are controlled via [basil](https://github.com/SiLab-Bonn/basil).
+Motor stages can be arranged in daisy chains and are controlled via [basil](https://github.com/SiLab-Bonn/basil).
 
 ## Installation
 
@@ -35,3 +35,5 @@ motor COMMAND arguments
 ```
 COMMAND being e.g. 'move' or 'stop' and arguments consist of a move value and the motor stage name.
 Motor stage UI accepts move values in different units (mm, cm, deg, rad...) and converts them automatically. 
+
+You can connect the motor stage to the [constellation](https://constellation.pages.desy.de/index.html) system.
