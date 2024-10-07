@@ -11,20 +11,20 @@
 #               M-403.6DG translation stage: step_size=0.018 um
 #   unit:       set output unit and default input unit 
 
-rot:
-  stage: rotation
-  address: 1
-  step_size: 34e-06
-  unit: deg
-
 x_axis:
   stage: translation
-  address: 2
+  address: 1
   step_size: 0.018
   unit: mm
 
 y_axis:
   stage: translation
-  address: 3
+  address: 2
   step_size: 0.018
   unit: mm
+
+rot:
+  stage: rotation
+  address: 3
+  step_size: 34e-06
+  unit: deg
