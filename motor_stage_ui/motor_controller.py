@@ -45,7 +45,7 @@ class MotorController(object):
         # time.sleep(0.1)
 
         # set motor stage velocity
-        self.velocity = 200000  # allegedly in steps per second
+        self.velocity = 1200000  # allegedly in steps per second
         self.set_velocity(address, self.velocity)
 
         time.sleep(0.1)
@@ -68,7 +68,7 @@ class MotorController(object):
             address (int): Address of the motorstage
             edge (int, optional): edge of the stage set 0 or 1. Defaults to 0.
         """
-        self.dut["MotorStage"].find_edge(1, address=address)
+        self.dut["MotorStage"].find_edge(edge, address=address)
 
     def set_home(self, address: int) -> None:
         """Set the current position of the motorstage as new 0.
