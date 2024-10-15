@@ -37,15 +37,29 @@ class MotorController(object):
         time.sleep(0.1)
         self.dut["MotorStage"]._write_command("RT", address=address)
         time.sleep(0.1)
-        # self.dut["MotorStage"].LL(address=address) # set logic
+
+        # set logic
+        # self.dut["MotorStage"].LL(address=address)
         # time.sleep(0.1)
         # self.dut["MotorStage"]._write_command('HL', address=address) # set logic
         # time.sleep(0.1)
-        self.dut["MotorStage"]._write_command(
-            "SV100000", address=address
-        )  # set motor stage velocity
+
+        # set motor stage velocity
+        self.velocity = 1200000  # allegedly in steps per second
+        self.set_velocity(address, self.velocity)
+
         time.sleep(0.1)
         self.log.info("Inititialized motorstage with address: %i" % address)
+
+    def set_velocity(self, address: int, velocity: int):
+        """Set motorstage velocity.
+
+        Args:
+            address (int): Address of the motorstage
+            velocity (int): Motorstage velocity is set allegedly as steps per second (This seems a bit random in tests.)
+        """
+        velocity = "SV" + str(velocity)
+        self.dut["MotorStage"]._write_command(velocity, address=address)
 
     def find_edge(self, address: int, edge: int = 0) -> None:
         """Tries to move the motorstage to a edge.
@@ -54,7 +68,7 @@ class MotorController(object):
             address (int): Address of the motorstage
             edge (int, optional): edge of the stage set 0 or 1. Defaults to 0.
         """
-        self.dut["MotorStage"].find_edge(1, address=address)
+        self.dut["MotorStage"].find_edge(edge, address=address)
 
     def set_home(self, address: int) -> None:
         """Set the current position of the motorstage as new 0.
