@@ -1,55 +1,123 @@
-from basil.dut import Dut
-import basil
-from motor_stage_ui import logger
-
-import os
+import serial
+from threading import Lock
+import time
 from pint import UnitRegistry
 import logging
-import time
-
-"""
-
-Main motor controller class. Uses the basil mercury controller functions. 
-Change baud rate and usb port of the motor stage in hte mercury_pyserial.yaml.
-
-"""
-
-# sudo chown :usr /dev/ttyUSB0
+from motor_stage_ui import logger
 
 
-class MotorController(object):
-    def __init__(self) -> None:
-        self.log = logger.setup_main_logger(__class__.__name__, logging.DEBUG)
+class PIStagesInterface:
+    def __init__(
+        self,
+        port: str,
+        baudrate: int = "9600",
+        parity: str = "N",
+        terminator: str = "\r",
+        timeout: float = 2,
+        stopbits: float = 2,
+    ):
+        self._serial = serial.Serial(
+            port=port,
+            baudrate=baudrate,
+            parity=parity,
+            timeout=timeout,
+            stopbits=stopbits,
+        )
+        self.log = logger.setup_main_logger(__class__.__name__, logging.WARNING)
         self.ureg = UnitRegistry()
-        path = os.path.dirname(basil.__file__)
-        self.dut = Dut(path + "/../examples/lab_devices/mercury_pyserial.yaml")
-        self.dut.init()
+        self._terminator = terminator
+        self._lock = Lock()
 
-    def init_motor(self, address: int) -> None:
+    # Serial helper functions
+
+    def _write(self, command: str):
+        """
+        Write command to serial port
+
+        Args:
+            command (str): Address of the motorstage
+
+        """
+        with self._lock:
+            msg = (command + self._terminator).encode()
+            self.log.debug(msg)
+            self._serial.write(msg)
+
+    def _write_command(self, command: str, address: int = None):
+        """Encodes the command for the PI motor stages.
+        This includes a header '01' and an address to select the specific stage and deselect the others and the command.
+
+        Args:
+            command (str): Command for the stage
+            address (int, optional): Address of the specific motor stage. Defaults to None.
+        """
+        if address:
+            self._write(("\x01%d" % (address)) + command)
+        else:
+            self.log.error("Commands needs motor address")
+
+    def _read(self):
+        """Read message from serial port.
+
+        Returns:
+            str: message
+        """
+        msg = (
+            self._serial.read_until(self._terminator.encode())
+            .decode()
+            .strip(self._terminator)
+        )
+        return msg
+
+    def _write_read(self, command: str, address: int = None):
+        """Write command to port and read back answer.
+
+        Args:
+            command (str): Command for port
+            address (int, optional): Address of specific motor stage. Defaults to None.
+
+        Returns:
+            _type_: Answer message
+        """
+        if address:
+            self._write(("\x01%d" % (address)) + command)
+        else:
+            self.log.error("Commands needs motor address")
+        return self._read()
+
+    def init_motor(self, address: int, logic: str = None) -> None:
         """Initialize motor stage. Powering and resetting the motor.
         This function needs poss. changes depending on the hardware specific.
         Check logic low or high of controller and motor stage speed if needed.
 
         Args:
             address (int): Address of the motorstage
+            logic (str, optional): Specify logic can be 'low' or 'high'. Defaults to None.
         """
-        self.dut["MotorStage"].motor_on(address=address)
+        self.motor_on(address=address)
         time.sleep(0.1)
-        self.dut["MotorStage"]._write_command("RT", address=address)
+        self._write_command("RT", address=address)
         time.sleep(0.1)
 
-        # set logic
-        # self.dut["MotorStage"].LL(address=address)
-        # time.sleep(0.1)
-        # self.dut["MotorStage"]._write_command('HL', address=address) # set logic
-        # time.sleep(0.1)
+        if logic == "low":
+            self._write_command("LL", address=address)  # set logic
+            time.sleep(0.1)
+        elif logic == "high":
+            self._write_command("HL", address=address)  # set logic
+            time.sleep(0.1)
 
         # set motor stage velocity
-        self.velocity = 1200000  # allegedly in steps per second
+        self.velocity = 200000  # allegedly in steps per second
         self.set_velocity(address, self.velocity)
-
         time.sleep(0.1)
-        self.log.info("Inititialized motorstage with address: %i" % address)
+
+        logging.info("Inititialized motorstage with address: %i" % address)
+
+    def motor_on(self, address=None):
+        self._write_command("MN", address)
+
+    def motor_off(self, address=None):
+        self._write_command("MF", address)
 
     def set_velocity(self, address: int, velocity: int):
         """Set motorstage velocity.
@@ -59,7 +127,7 @@ class MotorController(object):
             velocity (int): Motorstage velocity is set allegedly as steps per second (This seems a bit random in tests.)
         """
         velocity = "SV" + str(velocity)
-        self.dut["MotorStage"]._write_command(velocity, address=address)
+        self._write_command(velocity, address=address)
 
     def find_edge(self, address: int, edge: int = 0) -> None:
         """Tries to move the motorstage to a edge.
@@ -68,7 +136,9 @@ class MotorController(object):
             address (int): Address of the motorstage
             edge (int, optional): edge of the stage set 0 or 1. Defaults to 0.
         """
-        self.dut["MotorStage"].find_edge(edge, address=address)
+        self._write_command("FE%d" % edge, address)
+        pos = self._wait(address)
+        self.log.warning("Edge found at position: {pos}".format(pos=pos))
 
     def set_home(self, address: int) -> None:
         """Set the current position of the motorstage as new 0.
@@ -76,7 +146,7 @@ class MotorController(object):
         Args:
             address (int): Address of the motorstage
         """
-        self.dut["MotorStage"].set_home(address=address)
+        self._write_command("DH", address)
         self.log.info("Set Home for motorstage with address: %i" % (address))
 
     def go_home(self, address: int) -> None:
@@ -85,7 +155,7 @@ class MotorController(object):
         Args:
             address (int): Address of the motorstage
         """
-        self.dut["MotorStage"].go_home(address=address)
+        self._write_command("GH", address)
         self.log.info("Go Home for motorstage with address: %i" % (address))
 
     def abort(self, address: int) -> None:
@@ -94,7 +164,7 @@ class MotorController(object):
         Args:
             address (int): Address of the motorstage
         """
-        self.dut["MotorStage"].abort(address=address)
+        self._write_command("AB", address)
         self.log.info("Stop all movement motorstage with address: %i" % (address))
 
     def move_to_position(
@@ -176,7 +246,7 @@ class MotorController(object):
             address (int): Address of the motorstage
             value (int): move amount
         """
-        self.dut["MotorStage"].set_position(value, address=address, wait=False)
+        self._write_command("MA%d" % value, address)
         self.log.info(
             "Move to position %i motorstage with address: %i" % (value, address)
         )
@@ -188,7 +258,7 @@ class MotorController(object):
             address (int): Address of the motorstage
             value (int): move amount
         """
-        self.dut["MotorStage"].move_relative(address=address, value=value, wait=False)
+        self._write_command("MR%d" % value, address)
         self.log.info(
             "Moved motorstage relative %i with address: %i" % (value, address)
         )
@@ -202,7 +272,8 @@ class MotorController(object):
         Returns:
             int: current position of motorstage in integer step sizes
         """
-        return self.dut["MotorStage"].get_position(address=address)
+        msg = self._write_read("TP", address)[3:].replace("+", "").replace(":", "")
+        return int(msg)
 
     def _calculate_value(
         self, amount: str, unit: str, stage: str, step_size: float
@@ -229,8 +300,3 @@ class MotorController(object):
             except:
                 pos = self.ureg(amount + unit).to("deg").magnitude / step_size
         return pos
-
-
-if __name__ == "__main__":
-    x = MotorController()
-    x.move_relative(1, 1000000)

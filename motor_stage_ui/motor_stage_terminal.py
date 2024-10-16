@@ -1,4 +1,4 @@
-from motor_stage_ui.motor_controller import MotorController as MC
+from motor_stage_ui.PIStagesInterface import PIStagesInterface as MC
 import motor_stage_ui
 
 import os
@@ -40,7 +40,11 @@ def init(conf, motorname: str):
     Args:
         motorname (str): name of the motorstage
     """
-    MC().init_motor(conf.obj["CONF"][motorname]["address"])
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.init_motor(conf.obj["CONF"][motorname]["address"])
 
 
 @click.command()
@@ -55,7 +59,11 @@ def move(conf, motorname: str, a: str):
         motorname (str): name of the motorstage
         a (str): Move amount
     """
-    MC().move_relative(
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.move_relative(
         conf.obj["CONF"][motorname]["address"],
         a,
         conf.obj["CONF"][motorname]["unit"],
@@ -76,7 +84,11 @@ def moveto(conf, motorname: str, a: str):
         motorname (str): name of the motorstage
         a (str): Move to position
     """
-    MC().move_to_position(
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.move_to_position(
         conf.obj["CONF"][motorname]["address"],
         a,
         conf.obj["CONF"][motorname]["unit"],
@@ -94,12 +106,16 @@ def pos(conf, motorname: str):
     Args:
         motorname (str): name of the motorstage
     """
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
     click.echo(
         "Position of: "
         + motorname
         + " "
         + str(
-            MC().get_position(
+            mc.get_position(
                 conf.obj["CONF"][motorname]["address"],
                 conf.obj["CONF"][motorname]["unit"],
                 conf.obj["CONF"][motorname]["stage"],
@@ -120,7 +136,11 @@ def stop(conf, motorname: str):
     Args:
         motorname (str): name of the motorstage
     """
-    MC().abort(conf.obj["CONF"][motorname]["address"])
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.abort(conf.obj["CONF"][motorname]["address"])
 
 
 @click.command()
@@ -132,7 +152,11 @@ def sethome(conf, motorname: str):
     Args:
         motorname (str): name of the motorstage
     """
-    MC().set_home(conf.obj["CONF"][motorname]["address"])
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.set_home(conf.obj["CONF"][motorname]["address"])
 
 
 @click.command()
@@ -144,7 +168,11 @@ def gohome(conf, motorname: str):
     Args:
         motorname (str): name of the motorstage
     """
-    MC().go_home(conf.obj["CONF"][motorname]["address"])
+    mc = MC(
+        port=conf.obj["CONF"][motorname]["port"],
+        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+    )
+    mc.go_home(conf.obj["CONF"][motorname]["address"])
 
 
 motor.add_command(init)
