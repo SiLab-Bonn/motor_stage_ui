@@ -5,6 +5,8 @@ from pint import UnitRegistry
 import logging
 from motor_stage_ui import logger
 
+# sudo chown :usr /dev/ttyUSB0
+
 
 class PIStagesInterface:
     def __init__(
