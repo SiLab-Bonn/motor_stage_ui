@@ -4,6 +4,7 @@ setup(
     name="motor_stage_ui",
     version="1.0",
     license="License AGPL-3.0 license",
+    author="Rasmus Partzsch",
     packages=find_packages(),
     package_data={
         "": ["motor_stage_ui/configuration.yaml"],
@@ -15,6 +16,7 @@ setup(
         "coloredlogs",
         "PyQt5",
         "pyserial",
+        "pyyaml"
     ],
     entry_points={
         "console_scripts": [
