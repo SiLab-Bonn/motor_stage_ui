@@ -12,25 +12,25 @@
 #   unit:       set output unit and default input unit 
 
 x_axis:
-  stage: translation
+  stage_type: translation
   address: 1
   step_size: 0.018
   unit: mm
   port: '/dev/ttyUSB0'
-  baudrate: '9600'
+  baud_rate: '9600'
 
 y_axis:
-  stage: translation
+  stage_type: translation
   address: 2
   step_size: 0.018
   unit: mm
   port: '/dev/ttyUSB0'
-  baudrate: '9600'
+  baud_rate: '9600'
 
 rot:
-  stage: rotation
+  stage_type: rotation
   address: 3
   step_size: 34e-06
   unit: deg
   port: '/dev/ttyUSB0'
-  baudrate: '9600'
+  baud_rate: '9600'

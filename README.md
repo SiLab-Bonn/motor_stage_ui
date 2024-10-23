@@ -34,3 +34,26 @@ The motor stage velocity is set during the initialization step. To avoid unwante
 ```bash
 motor init MOTORNAME
 ```
+
+### Configuration
+
+| Configuration | Description | Type |
+|-----------|-------------|------|
+| `stage_type` | Type of the motor stage (translation or rotation) | String |
+| `address` | Address of the specific motor controller (set on the motor controller) | Integer |
+| `step_size` | Step size of the motor stage (given in um for translation and deg for rotation stages) | Integer |
+| `unit` | Default unit of the motor stage | String |
+| `port` | Serial port to connect to | String |
+| `baud_rate` | Baud rate of the motor controller (set on the motor controller) | String |
+
+### Commands
+
+| Terminal Command | GUI Command |  Description | First Argument | Second Argument |
+|---------|-------------|-----------|-----------|-----------|
+| `init` | `Init.` | Initialize motor stage. Powering and resetting the motor. Set motor move speed in the PIStageInterface.py function.| motor_name (str): name of the motorstage | - |
+| `move` | `Input rel.` | Moves the motor stage a relative amount, positive values for ahead, negatives for back. Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves the default unit amount. | motor_name (str): name of the motorstage | a (str): Move amount | 
+| `moveto` | `input abs.` | Moves the motor stage to a absolut position. Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves to the default position unit. | motor_name (str): name of the motorstage |a (str): Move to position |
+| `pos` | - | Logs the current position of the motor stage.| motor_name (str): name of the motorstage | -|
+| `stop` | `Stop` | Immediately stops all movement of the stage | motor_name (str): name of the motorstage | - |
+| `sethome` | `Set Zero` | Sets the current position of the stage as new origin | motor_name (str): name of the motorstage | - |
+| `gohome` | `MV. Zero` | Goes to origin of the stage | motor_name (str): name of the motorstage | - |

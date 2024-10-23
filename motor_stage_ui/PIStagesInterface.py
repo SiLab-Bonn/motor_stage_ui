@@ -12,7 +12,7 @@ class PIStagesInterface:
     def __init__(
         self,
         port: str,
-        baudrate: int = "9600",
+        baud_rate: int = "9600",
         parity: str = "N",
         terminator: str = "\r",
         timeout: float = 2,
@@ -20,7 +20,7 @@ class PIStagesInterface:
     ):
         self._serial = serial.Serial(
             port=port,
-            baudrate=baudrate,
+            baudrate=baud_rate,
             parity=parity,
             timeout=timeout,
             stopbits=stopbits,
@@ -87,13 +87,15 @@ class PIStagesInterface:
             self.log.error("Commands needs motor address")
         return self._read()
 
+    # Motor stage commands
+
     def init_motor(self, address: int, logic: str = None) -> None:
         """Initialize motor stage. Powering and resetting the motor.
         This function needs poss. changes depending on the hardware specific.
         Check logic low or high of controller and motor stage speed if needed.
 
         Args:
-            address (int): Address of the motorstage
+            address (int): Address of the motor stage
             logic (str, optional): Specify logic can be 'low' or 'high'. Defaults to None.
         """
         self.motor_on(address=address)

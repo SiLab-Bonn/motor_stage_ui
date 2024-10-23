@@ -33,10 +33,10 @@ class MainWindow(QMainWindow):
         for index, motor in enumerate(self.conf):
             self.motor.append(
                 PIStagesInterface(
-                    port=self.conf[motor]["port"], baudrate=self.conf[motor]["baudrate"]
+                    port=self.conf[motor]["port"], baud_rate=self.conf[motor]["baud_rate"]
                 )
             )
-            stage = self.conf[motor]["stage"]
+            stage = self.conf[motor]["stage_type"]
             address = self.conf[motor]["address"]
             step_size = eval(str(self.conf[motor]["step_size"]))
             unit = self.conf[motor]["unit"]
@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
                                 self.get_position_clicked(
                                     self.conf[list(self.conf.keys())[i]]["address"],
                                     unit=self.conf[list(self.conf.keys())[i]]["unit"],
-                                    stage=self.conf[list(self.conf.keys())[i]]["stage"],
+                                    stage=self.conf[list(self.conf.keys())[i]]["stage_type"],
                                     step_size=eval(
                                         str(
                                             self.conf[list(self.conf.keys())[i]][

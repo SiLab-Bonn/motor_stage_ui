@@ -11,7 +11,6 @@ Terminal control UI.
 
 """
 
-
 @click.group()
 @click.pass_context
 def motor(conf):
@@ -33,146 +32,146 @@ def motor(conf):
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
-def init(conf, motorname: str):
-    """Initialize motor stage. Powering and resetting the motor. Set motor move speed in the motor_controller.py function.
+@click.argument("motor_name")
+def init(conf, motor_name: str):
+    """Initialize motor stage. Powering and resetting the motor. Set motor move speed in the PIStageInterface.py function.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
-    mc.init_motor(conf.obj["CONF"][motorname]["address"])
+    mc.init_motor(conf.obj["CONF"][motor_name]["address"])
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
+@click.argument("motor_name")
 @click.option("-a", default="0", help="move value")
-def move(conf, motorname: str, a: str):
+def move(conf, motor_name: str, a: str):
     """Moves the motor stage a relative amount, positive values for ahead, negatives for back.
     Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves the default unit amount.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
         a (str): Move amount
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
     mc.move_relative(
-        conf.obj["CONF"][motorname]["address"],
+        conf.obj["CONF"][motor_name]["address"],
         a,
-        conf.obj["CONF"][motorname]["unit"],
-        conf.obj["CONF"][motorname]["stage"],
-        conf.obj["CONF"][motorname]["step_size"],
+        conf.obj["CONF"][motor_name]["unit"],
+        conf.obj["CONF"][motor_name]["stage_type"],
+        conf.obj["CONF"][motor_name]["step_size"],
     )
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
+@click.argument("motor_name")
 @click.option("-a", default="0", help="move value")
-def moveto(conf, motorname: str, a: str):
+def moveto(conf, motor_name: str, a: str):
     """Moves the motor stage to a absolut position.
     Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves to the default position unit.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
         a (str): Move to position
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
     mc.move_to_position(
-        conf.obj["CONF"][motorname]["address"],
+        conf.obj["CONF"][motor_name]["address"],
         a,
-        conf.obj["CONF"][motorname]["unit"],
-        conf.obj["CONF"][motorname]["stage"],
-        conf.obj["CONF"][motorname]["step_size"],
+        conf.obj["CONF"][motor_name]["unit"],
+        conf.obj["CONF"][motor_name]["stage_type"],
+        conf.obj["CONF"][motor_name]["step_size"],
     )
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
-def pos(conf, motorname: str):
+@click.argument("motor_name")
+def pos(conf, motor_name: str):
     """Logs the current position of the motor stage.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
     click.echo(
         "Position of: "
-        + motorname
+        + motor_name
         + " "
         + str(
             mc.get_position(
-                conf.obj["CONF"][motorname]["address"],
-                conf.obj["CONF"][motorname]["unit"],
-                conf.obj["CONF"][motorname]["stage"],
-                conf.obj["CONF"][motorname]["step_size"],
+                conf.obj["CONF"][motor_name]["address"],
+                conf.obj["CONF"][motor_name]["unit"],
+                conf.obj["CONF"][motor_name]["stage_type"],
+                conf.obj["CONF"][motor_name]["step_size"],
             )
         )
         + " "
-        + conf.obj["CONF"][motorname]["unit"]
+        + conf.obj["CONF"][motor_name]["unit"]
     )
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
-def stop(conf, motorname: str):
+@click.argument("motor_name")
+def stop(conf, motor_name: str):
     """Stops all movement of the motorstage.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
-    mc.abort(conf.obj["CONF"][motorname]["address"])
+    mc.abort(conf.obj["CONF"][motor_name]["address"])
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
-def sethome(conf, motorname: str):
+@click.argument("motor_name")
+def sethome(conf, motor_name: str):
     """Sets the current position of the motorstage as absolute posiiton zero.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
-    mc.set_home(conf.obj["CONF"][motorname]["address"])
+    mc.set_home(conf.obj["CONF"][motor_name]["address"])
 
 
 @click.command()
 @click.pass_context
-@click.argument("motorname")
-def gohome(conf, motorname: str):
+@click.argument("motor_name")
+def gohome(conf, motor_name: str):
     """Moves the motor to the absolute position zero.
 
     Args:
-        motorname (str): name of the motorstage
+        motor_name (str): name of the motorstage
     """
     mc = MC(
-        port=conf.obj["CONF"][motorname]["port"],
-        baudrate=conf.obj["CONF"][motorname]["baudrate"],
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
     )
-    mc.go_home(conf.obj["CONF"][motorname]["address"])
+    mc.go_home(conf.obj["CONF"][motor_name]["address"])
 
 
 motor.add_command(init)
