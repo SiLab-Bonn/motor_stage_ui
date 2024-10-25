@@ -10,14 +10,7 @@ setup(
         "": ["motor_stage_ui/configuration.yaml"],
     },
     include_package_data=True,
-    install_requires=[
-        "Click",
-        "pint",
-        "coloredlogs",
-        "PyQt5",
-        "pyserial",
-        "pyyaml"
-    ],
+    install_requires=["Click", "pint", "coloredlogs", "PyQt5", "pyserial", "pyyaml"],
     entry_points={
         "console_scripts": [
             "motor = motor_stage_ui.motor_stage_terminal:motor",

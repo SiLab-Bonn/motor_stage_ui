@@ -7,9 +7,10 @@ import yaml
 
 """
 
-Terminal control UI.      
+Terminal control UI.
 
 """
+
 
 @click.group()
 @click.pass_context
