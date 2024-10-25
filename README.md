@@ -36,6 +36,7 @@ motor init MOTORNAME
 ```
 
 ### Configuration
+The step size of a specific stage is given in um for translation stages and deg for rotation stages and can be obtained from the 'Design resolution' in e.g. [PI precision position and motion control](https://www.pi-usa.us/fileadmin/user_upload/physik_instrumente/files/CAT/PI-CAT132E-Precision-Positioning-and-Motion-Control-Web.pdf).
 
 | Configuration | Description | Type |
 |-----------|-------------|------|
