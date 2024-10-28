@@ -12,7 +12,7 @@ class PIStagesInterface:
     def __init__(
         self,
         port: str,
-        baud_rate: int = "9600",
+        baud_rate: int = 9600,
         parity: str = "N",
         terminator: str = "\r",
         timeout: float = 2,
@@ -115,7 +115,7 @@ class PIStagesInterface:
         self.set_velocity(address, self.velocity)
         time.sleep(0.1)
 
-        logging.info("Inititialized motorstage with address: %i" % address)
+        logging.info("Initialized motorstage with address: %i" % address)
 
     def motor_on(self, address=None):
         self._write_command("MN", address)
@@ -154,7 +154,7 @@ class PIStagesInterface:
         self.log.info("Set Home for motorstage with address: %i" % (address))
 
     def go_home(self, address: int) -> None:
-        """Moves the motorstage to the absolut zero position.
+        """Moves the motorstage to the absolute zero position.
 
         Args:
             address (int): Address of the motorstage
@@ -177,14 +177,14 @@ class PIStagesInterface:
         """Moves the motor stage absolute position.
         Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves the default unit amount.
         The unit inputs are converted using the pint package into the according motor controller steps.
-        Carefull stepsize depends on motorstage and powering. Deviations can also occure from weight on stage usw.
+        Careful stepsize depends on motorstage and powering. Deviations can also occur from weight on stage usw.
 
         Args:
             address (int): Address of the motorstage
             amount (str): absolute position
             unit (str): input unit
-            stage (int): stage type eather 'rotation' or translation
-            step_size (float): step size of the motorstage given in deg or um respectivly
+            stage (int): stage type either 'rotation' or translation
+            step_size (float): step size of the motorstage given in deg or um respectively
         """
         try:
             if amount != "" and stage in ["translation", "rotation"]:
@@ -201,14 +201,14 @@ class PIStagesInterface:
         """Moves the motor stage relative amount, positive values for ahead, negatives for back.
         Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves the default unit amount.
         The unit inputs are converted using the pint package into the according motor controller steps.
-        Carefull stepsize depends on motorstage and powering. Deviations can also occure from weight on stage usw.
+        Careful stepsize depends on motorstage and powering. Deviations can also occur from weight on stage usw.
 
         Args:
             address (int): Address of the motorstage
             amount (str): absolute position
             unit (str): input unit
-            stage (int): stage type eather 'rotation' or translation
-            step_size (float): step size of the motorstage given in deg or um respectivly
+            stage (int): stage type either 'rotation' or translation
+            step_size (float): step size of the motorstage given in deg or um respectively
         """
         try:
             if amount != "" and stage in ["translation", "rotation"]:
@@ -227,11 +227,11 @@ class PIStagesInterface:
         Args:
             address (int): Address of the motorstage
             unit (str): output unit
-            stage (int): stage type eather 'rotation' or translation
-            step_size (int): step size of the motorstage given in deg or um respectivly
+            stage (int): stage type either 'rotation' or translation
+            step_size (int): step size of the motorstage given in deg or um
 
         Returns:
-            str: current position of motorstage in unit 3 digits precision
+            str: current position of motorstage in unit 3 digits precision respectively
         """
         if stage in ["translation", "rotation"]:
             if stage == "translation":

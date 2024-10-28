@@ -21,7 +21,7 @@ def motor(conf):
     (also in basil).
 
         Args:
-            conf (str): Needs path to configuration yaml. This path is convertet into a click object and passed to the individual functions.
+            conf (str): Needs path to configuration yaml. This path is converted into a click object and passed to the individual functions.
     """
 
     conf.ensure_object(dict)
@@ -77,7 +77,7 @@ def move(conf, motor_name: str, a: str):
 @click.argument("motor_name")
 @click.option("-a", default="0", help="move value")
 def moveto(conf, motor_name: str, a: str):
-    """Moves the motor stage to a absolut position.
+    """Moves the motor stage to a absolute position.
     Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves to the default position unit.
 
     Args:

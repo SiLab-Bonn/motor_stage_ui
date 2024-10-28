@@ -53,7 +53,7 @@ The step size of a specific stage is given in um for translation stages and deg 
 |---------|-------------|-----------|-----------|-----------|
 | `init` | `Init.` | Initialize motor stage. Powering and resetting the motor. Set motor move speed in the PIStageInterface.py function.| motor_name (str): name of the motorstage | - |
 | `move` | `Input rel.` | Moves the motor stage a relative amount, positive values for ahead, negatives for back. Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves the default unit amount. | motor_name (str): name of the motorstage | a (str): Move amount |
-| `moveto` | `input abs.` | Moves the motor stage to a absolut position. Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves to the default position unit. | motor_name (str): name of the motorstage |a (str): Move to position |
+| `moveto` | `input abs.` | Moves the motor stage to an absolute position. Accepts string inputs with units (4cm, -2mm...). If no unit is given, the motor moves to the default position unit. | motor_name (str): name of the motorstage |a (str): Move to position |
 | `pos` | - | Logs the current position of the motor stage.| motor_name (str): name of the motorstage | -|
 | `stop` | `Stop` | Immediately stops all movement of the stage | motor_name (str): name of the motorstage | - |
 | `sethome` | `Set Zero` | Sets the current position of the stage as new origin | motor_name (str): name of the motorstage | - |

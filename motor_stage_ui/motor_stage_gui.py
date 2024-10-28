@@ -125,7 +125,7 @@ class MainWindow(QMainWindow):
     """ Draw GUI """
 
     def labels(self):
-        """Draws lables above motorstage buttons."""
+        """Draws labels above motorstage buttons."""
         label = QLabel("Motor", self)
         label.setAlignment(Qt.AlignCenter)
         label.resize(100, 20)
