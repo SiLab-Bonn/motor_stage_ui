@@ -210,7 +210,7 @@ class MainWindow(QMainWindow):
             name (int, optional): Name of the motorstage. Defaults to 1.
         """
         name = QLineEdit(text=name, parent=self)
-        name.move(0, (address - 1) * 30 + 20)
+        name.move(0, index * 30 + 20)
         name.resize(100, 30)
         name.setAlignment(Qt.AlignCenter)
 

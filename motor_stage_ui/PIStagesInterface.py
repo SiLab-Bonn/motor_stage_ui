@@ -69,6 +69,9 @@ class PIStagesInterface:
             .decode()
             .strip(self._terminator)
         )
+        if msg == "":
+            self.log.error("No responds from motor controller.")
+            raise ValueError
         return msg
 
     def _write_read(self, command: str, address: int = None):
@@ -276,8 +279,16 @@ class PIStagesInterface:
         Returns:
             int: current position of motorstage in integer step sizes
         """
-        msg = self._write_read("TP", address)[3:].replace("+", "").replace(":", "")
-        return int(msg)
+        try:
+            msg = int(
+                self._write_read("TP", address)[3:].replace("+", "").replace(":", "")
+            )
+        except ValueError:
+            self.log.error(
+                "Invalid motor stage responds:, check addresses, baudrate..."
+            )
+            raise ValueError
+        return msg
 
     def _calculate_value(
         self, amount: str, unit: str, stage: str, step_size: float
