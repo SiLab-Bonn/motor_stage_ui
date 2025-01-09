@@ -175,6 +175,22 @@ def gohome(conf, motor_name: str):
     mc.go_home(conf.obj["CONF"][motor_name]["address"])
 
 
+@click.command()
+@click.pass_context
+@click.argument("motor_name")
+def status(conf, motor_name: str):
+    """Log status of motor stage to terminal
+
+    Args:
+        motor_name (str): name of the motorstage
+    """
+    mc = MC(
+        port=conf.obj["CONF"][motor_name]["port"],
+        baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+    )
+    mc.get_stat(conf.obj["CONF"][motor_name]["address"])
+
+
 motor.add_command(init)
 motor.add_command(move)
 motor.add_command(moveto)
@@ -183,3 +199,4 @@ motor.add_command(init)
 motor.add_command(sethome)
 motor.add_command(gohome)
 motor.add_command(pos)
+motor.add_command(status)

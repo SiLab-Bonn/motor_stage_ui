@@ -54,7 +54,7 @@ class PIStagesInterface:
             address (int, optional): Address of the specific motor stage. Defaults to None.
         """
         if address:
-            self._write(("\x01%d" % (address)) + command)
+            self._write(("\x01%d" % (address - 1)) + command)
         else:
             self.log.error("Commands needs motor address")
 
@@ -85,7 +85,7 @@ class PIStagesInterface:
             _type_: Answer message
         """
         if address:
-            self._write(("\x01%d" % (address)) + command)
+            self._write(("\x01%d" % (address - 1)) + command)
         else:
             self.log.error("Commands needs motor address")
         return self._read()
@@ -164,6 +164,17 @@ class PIStagesInterface:
         """
         self._write_command("GH", address)
         self.log.info("Go Home for motorstage with address: %i" % (address))
+
+    def get_stat(self, address: int) -> None:
+        """Logs status of the motor stage to the terminal. This also resets status register.
+
+        Args:
+            address (int): Address of the motorstage
+        """
+        err_msg = self._write_read("TS", address)
+        self.log.warning(
+            "Status of motor stage with address %i: %s" % (address, err_msg)
+        )
 
     def abort(self, address: int) -> None:
         """Stops all movement of the motorstage.
@@ -293,7 +304,7 @@ class PIStagesInterface:
     def _calculate_value(
         self, amount: str, unit: str, stage: str, step_size: float
     ) -> int:
-        """Calculates number of motor steps from a given in put amount and the given units
+        """Calculates number of motor steps from a given input amount and the given units
 
         Args:
             amount (str): Input amount

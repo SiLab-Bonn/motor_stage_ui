@@ -1,7 +1,7 @@
 # Motor stage UI
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Offers both a terminal and graphical user interface for the Mercury motor controller.
+Offers both a terminal and graphical user interface for the [C-863 Mercury controller](https://www.le.infn.it/~chiodini/allow_listing/pi/Manuals/C-863_UserManual_MS205E200.pdf) (Check also the [commands](https://twiki.cern.ch/twiki/bin/viewfile/ILCBDSColl/Phase2Preparations?rev=1;filename=MercuryNativeCommands_MS176E101.pdf)).
 Motor stages can be arranged in daisy chains.
 
 ## Installation
