@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "motot_stage_ui"
+version = "1.0"
+license = { "text" = "AGPL-3.0" }
+description = "User interface for the Mercury motor controller"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Rasmus Partzsch", email="rasmus.partzsch@uni-bonn.de"},
+]
+dependencies = [
+    "Click",
+    "pint",
+    "PyQt5",
+    "pyserial",
+    "pyyaml"
+]
+
+[project.urls]
+"Repository" = "https://github.com/SiLab-Bonn/motor_stage_ui"
+
+[project.scripts]
+motor = "motor_stage_ui.motor_stage_terminal:motor"
+motorgui = "motor_stage_ui.motor_stage_gui:main"
