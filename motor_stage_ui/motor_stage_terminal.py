@@ -1,4 +1,4 @@
-from motor_stage_ui.PIStagesInterface import PIStagesInterface as MC
+from motor_stage_ui.pi_stages_interface import PIStagesInterface as MC
 import motor_stage_ui
 
 import os
