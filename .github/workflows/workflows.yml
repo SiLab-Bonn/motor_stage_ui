@@ -3,7 +3,7 @@ name: pre-commit
 on:
   pull_request:
   push:
-    branches: [main, tests]
+    branches: [main]
 
 jobs:
   pre-commit:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
-      - name: Install dependencies
+      - name: Tests
         run: |
           pip install -e .[test]
           pytest -sv
