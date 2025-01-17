@@ -159,7 +159,9 @@ class PIStagesInterface:
         velocity = "SV" + str(velocity)
         self._write_command(velocity, address=address)
 
-    def find_edge(self, address: int, edge: int = 0) -> None:
+    def find_edge(
+        self, address: int, unit: str, stage: str, step_size: float, edge: int = 0
+    ) -> None:
         """Tries to move the motorstage to a edge.
 
         Args:
@@ -167,7 +169,9 @@ class PIStagesInterface:
             edge (int, optional): edge of the stage set 0 or 1. Defaults to 0.
         """
         self._write_command("FE%d" % edge, address)
-        pos = self._wait(address)
+        pos = self.get_position(
+            address=address, unit=unit, stage=stage, step_size=step_size
+        )
         self.log.warning("Edge found at position: {pos}".format(pos=pos))
 
     def set_home(self, address: int) -> None:

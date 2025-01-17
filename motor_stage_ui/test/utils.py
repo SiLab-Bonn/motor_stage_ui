@@ -36,7 +36,8 @@ class SerialInterfaceMock:
         Returns:
             str: message
         """
-        msg = [cmd.decode().strip(self._terminator) for cmd in self._serial_commands]
+        self.log.warning(self._serial_commands)
+        msg = self._serial_commands[-1].decode().strip().replace(self._terminator, "")
         if msg == "":
             self.log.error("No responds from serial interface.")
             raise ValueError
