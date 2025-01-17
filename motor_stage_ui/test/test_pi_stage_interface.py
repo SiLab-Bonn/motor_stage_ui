@@ -1,5 +1,4 @@
 from pathlib import Path
-import os
 import pytest
 import yaml
 from motor_stage_ui.pi_stages_interface import PIStagesInterface
@@ -38,6 +37,16 @@ def test_init_motor():
         b"\x012RT\r",
         b"\x012SV200000\r",
     ]
+
+
+def test_motor_off():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    PISTAGES.motor_off(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010MF\r"
+
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.motor_off(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012MF\r"
 
 
 def test_find_edge():

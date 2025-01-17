@@ -1,4 +1,5 @@
 from motor_stage_ui.pi_stages_interface import PIStagesInterface
+from motor_stage_ui.pi_stages_interface import SerialInterface
 from motor_stage_ui import logger
 import motor_stage_ui
 
@@ -17,7 +18,7 @@ GUI for the motor stage
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, config_path):
+    def __init__(self, config_path, interface=SerialInterface):
         super().__init__()
 
         self.log = logger.setup_main_logger(__class__.__name__, logging.DEBUG)
@@ -35,6 +36,7 @@ class MainWindow(QMainWindow):
                 PIStagesInterface(
                     port=self.conf[motor]["port"],
                     baud_rate=self.conf[motor]["baud_rate"],
+                    interface=interface,
                 )
             )
             stage = self.conf[motor]["stage_type"]
