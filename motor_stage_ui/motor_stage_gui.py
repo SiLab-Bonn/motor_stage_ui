@@ -1,4 +1,4 @@
-from motor_stage_ui.PIStagesInterface import PIStagesInterface
+from motor_stage_ui.pi_stages_interface import PIStagesInterface
 from motor_stage_ui import logger
 import motor_stage_ui
 

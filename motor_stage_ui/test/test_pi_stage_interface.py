@@ -3,7 +3,6 @@ import os
 import pytest
 import yaml
 from motor_stage_ui.pi_stages_interface import PIStagesInterface
-from motor_stage_ui.pi_stages_interface import SerialInterface
 from motor_stage_ui.test.utils import SerialInterfaceMock
 
 
@@ -12,10 +11,6 @@ CONFIG_FILE = FILEPATH / "test_configuration.yaml"
 
 with open(CONFIG_FILE) as yaml_file:
     TESTCONFIG = yaml.safe_load(yaml_file)
-ADDRESS = TESTCONFIG["x_axis"]["address"]
-UNIT = TESTCONFIG["x_axis"]["unit"]
-STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
-STAGE = TESTCONFIG["x_axis"]["stage_type"]
 
 
 INTERFACE = SerialInterfaceMock
@@ -28,6 +23,7 @@ PISTAGES = PIStagesInterface(
 
 
 def test_init_motor():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
     PISTAGES.init_motor(address=ADDRESS)
     assert PISTAGES.serial_interface._serial_commands[-3:] == [
         b"\x010MN\r",
@@ -35,8 +31,21 @@ def test_init_motor():
         b"\x010SV200000\r",
     ]
 
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.init_motor(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-3:] == [
+        b"\x012MN\r",
+        b"\x012RT\r",
+        b"\x012SV200000\r",
+    ]
+
 
 def test_find_edge():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    UNIT = TESTCONFIG["x_axis"]["unit"]
+    STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
+    STAGE = TESTCONFIG["x_axis"]["stage_type"]
+
     def __get_position(self, address):
         # Blank get Position function
         return 0
@@ -46,37 +55,97 @@ def test_find_edge():
     PISTAGES.find_edge(address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE)
     assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010FE0\r"
 
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    UNIT = TESTCONFIG["rot"]["unit"]
+    STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
+    STAGE = TESTCONFIG["rot"]["stage_type"]
+
+    def __get_position(self, address):
+        # Blank get Position function
+        return 0
+
+    func_type = type(PISTAGES._get_position)
+    PISTAGES._get_position = func_type(__get_position, PISTAGES)
+    PISTAGES.find_edge(address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012FE0\r"
+
 
 def test_set_home() -> None:
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
     PISTAGES.set_home(address=ADDRESS)
     assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010DH\r"
 
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.set_home(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012DH\r"
+
 
 def test_go_home() -> None:
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
     PISTAGES.go_home(address=ADDRESS)
     assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010GH\r"
 
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.go_home(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012GH\r"
+
 
 def test_abort():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
     PISTAGES.abort(address=ADDRESS)
     assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010AB\r"
 
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.abort(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012AB\r"
+
 
 def test_move_to_position():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    UNIT = TESTCONFIG["x_axis"]["unit"]
+    STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
+    STAGE = TESTCONFIG["x_axis"]["stage_type"]
     PISTAGES.move_to_position(
-        address=ADDRESS, amount="0", unit=UNIT, stage=STAGE, step_size=STEPSIZE
+        address=ADDRESS, amount="1mm", unit=UNIT, stage=STAGE, step_size=STEPSIZE
     )
-    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010MA0\r"
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010MA55555\r"
+
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    UNIT = TESTCONFIG["rot"]["unit"]
+    STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
+    STAGE = TESTCONFIG["rot"]["stage_type"]
+    PISTAGES.move_to_position(
+        address=ADDRESS, amount="1deg", unit=UNIT, stage=STAGE, step_size=STEPSIZE
+    )
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012MA29411\r"
 
 
 def test_move_relative():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    UNIT = TESTCONFIG["x_axis"]["unit"]
+    STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
+    STAGE = TESTCONFIG["x_axis"]["stage_type"]
     PISTAGES.move_relative(
-        address=ADDRESS, amount="0", unit=UNIT, stage=STAGE, step_size=STEPSIZE
+        address=ADDRESS, amount="-1cm", unit=UNIT, stage=STAGE, step_size=STEPSIZE
     )
-    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010MR0\r"
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010MR-555555\r"
+
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    UNIT = TESTCONFIG["rot"]["unit"]
+    STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
+    STAGE = TESTCONFIG["rot"]["stage_type"]
+    PISTAGES.move_relative(
+        address=ADDRESS, amount="-1rad", unit=UNIT, stage=STAGE, step_size=STEPSIZE
+    )
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012MR-1685169\r"
 
 
 def test_get_position():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    UNIT = TESTCONFIG["x_axis"]["unit"]
+    STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
+    STAGE = TESTCONFIG["x_axis"]["stage_type"]
+
     def __get_position(self, address):
         # Blank get Position function
         return 0
@@ -89,6 +158,34 @@ def test_get_position():
         )
         == "0.000"
     )
+
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    UNIT = TESTCONFIG["rot"]["unit"]
+    STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
+    STAGE = TESTCONFIG["rot"]["stage_type"]
+
+    def __get_position(self, address):
+        # Blank get Position function
+        return 0
+
+    func_type = type(PISTAGES._get_position)
+    PISTAGES._get_position = func_type(__get_position, PISTAGES)
+    assert (
+        PISTAGES.get_position(
+            address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE
+        )
+        == "0.000"
+    )
+
+
+def test_get_stat():
+    ADDRESS = TESTCONFIG["x_axis"]["address"]
+    PISTAGES.get_stat(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010TS\r"
+
+    ADDRESS = TESTCONFIG["rot"]["address"]
+    PISTAGES.get_stat(address=ADDRESS)
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012TS\r"
 
 
 if __name__ == "__main__":

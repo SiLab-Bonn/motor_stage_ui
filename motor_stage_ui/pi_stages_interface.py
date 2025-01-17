@@ -285,7 +285,7 @@ class PIStagesInterface:
             self.log.warning("Invalid stage type")
 
     def _move_to_position(self, address: int, value: int) -> None:
-        """Helper function for basil
+        """Helper function for pyserial
 
         Args:
             address (int): Address of the motorstage
@@ -297,7 +297,7 @@ class PIStagesInterface:
         )
 
     def _move_relative(self, address: int, value: int = 1000000) -> None:
-        """Helper function for basil
+        """Helper function for pyserial
 
         Args:
             address (int): Address of the motorstage
@@ -309,7 +309,7 @@ class PIStagesInterface:
         )
 
     def _get_position(self, address: int) -> None:
-        """Helper function for basil
+        """Helper function for pyserial
 
         Args:
             address (int): Address of the motorstage
