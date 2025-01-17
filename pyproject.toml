@@ -17,8 +17,12 @@ dependencies = [
     "pint",
     "PyQt5",
     "pyserial",
-    "pyyaml"
+    "pyyaml",
+    "coloredlogs"
 ]
+
+[project.optional-dependencies]
+test = ["pytest", "coverage"]
 
 [project.urls]
 "Repository" = "https://github.com/SiLab-Bonn/motor_stage_ui"

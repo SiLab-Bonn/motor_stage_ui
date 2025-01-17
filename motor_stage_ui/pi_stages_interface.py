@@ -8,7 +8,7 @@ from motor_stage_ui import logger
 # sudo chown :usr /dev/ttyUSB0
 
 
-class PIStagesInterface:
+class SerialInterface:
     def __init__(
         self,
         port: str,
@@ -26,7 +26,6 @@ class PIStagesInterface:
             stopbits=stopbits,
         )
         self.log = logger.setup_main_logger(__class__.__name__, logging.WARNING)
-        self.ureg = UnitRegistry()
         self._terminator = terminator
         self._lock = Lock()
 
@@ -45,19 +44,6 @@ class PIStagesInterface:
             self.log.debug(msg)
             self._serial.write(msg)
 
-    def _write_command(self, command: str, address: int = None):
-        """Encodes the command for the PI motor stages.
-        This includes a header '01' and an address to select the specific stage and deselect the others and the command.
-
-        Args:
-            command (str): Command for the stage
-            address (int, optional): Address of the specific motor stage. Defaults to None.
-        """
-        if address:
-            self._write(("\x01%d" % (address - 1)) + command)
-        else:
-            self.log.error("Commands needs motor address")
-
     def _read(self):
         """Read message from serial port.
 
@@ -70,9 +56,46 @@ class PIStagesInterface:
             .strip(self._terminator)
         )
         if msg == "":
-            self.log.error("No responds from motor controller.")
+            self.log.error("No responds from serial interface.")
             raise ValueError
         return msg
+
+
+class PIStagesInterface:
+    def __init__(
+        self,
+        port: str,
+        baud_rate: int = 9600,
+        parity: str = "N",
+        terminator: str = "\r",
+        timeout: float = 2,
+        stopbits: float = 2,
+        interface: type[SerialInterface] = SerialInterface,
+    ):
+        self.serial_interface = interface(
+            port=port,
+            baud_rate=baud_rate,
+            parity=parity,
+            terminator=terminator,
+            timeout=timeout,
+            stopbits=stopbits,
+        )
+
+        self.log = logger.setup_main_logger(__class__.__name__, logging.WARNING)
+        self.ureg = UnitRegistry()
+
+    def _write_command(self, command: str, address: int = None):
+        """Encodes the command for the PI motor stages.
+        This includes a header '01' and an address to select the specific stage and deselect the others and the command.
+
+        Args:
+            command (str): Command for the stage
+            address (int, optional): Address of the specific motor stage. Defaults to None.
+        """
+        if address:
+            self.serial_interface._write(("\x01%d" % (address - 1)) + command)
+        else:
+            self.log.error("Commands needs motor address")
 
     def _write_read(self, command: str, address: int = None):
         """Write command to port and read back answer.
@@ -85,10 +108,10 @@ class PIStagesInterface:
             _type_: Answer message
         """
         if address:
-            self._write(("\x01%d" % (address - 1)) + command)
+            self.serial_interface._write(("\x01%d" % (address - 1)) + command)
         else:
             self.log.error("Commands needs motor address")
-        return self._read()
+        return self.serial_interface._read()
 
     # Motor stage commands
 
