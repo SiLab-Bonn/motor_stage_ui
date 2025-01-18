@@ -9,17 +9,19 @@ jobs:
     pre-commit:
         runs-on: ubuntu-latest
         steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-python@v3
+        - uses: actions/checkout@v4
+        - uses: actions/setup-python@v5
         - uses: pre-commit/action@v3.0.1
 
 
     pytest:
         runs-on: ubuntu-latest
+        env:
+            DISPLAY: ':99.0'
         steps:
-            - uses: actions/checkout@v3
-            - uses: actions/setup-python@v3
+            - uses: actions/checkout@v4
+            - uses: actions/setup-python@v5
             - run: |
-                sudo apt-get install -y qt5-default libxcb-xinerama0
+                sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
                 pip install -e .[test]
                 pytest -sv
