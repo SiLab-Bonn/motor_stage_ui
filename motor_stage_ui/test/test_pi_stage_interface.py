@@ -55,28 +55,16 @@ def test_find_edge():
     STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
     STAGE = TESTCONFIG["x_axis"]["stage_type"]
 
-    def __get_position(self, address):
-        # Blank get Position function
-        return 0
-
-    func_type = type(PISTAGES._get_position)
-    PISTAGES._get_position = func_type(__get_position, PISTAGES)
     PISTAGES.find_edge(address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE)
-    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010FE0\r"
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x010TP\r"
 
     ADDRESS = TESTCONFIG["rot"]["address"]
     UNIT = TESTCONFIG["rot"]["unit"]
     STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
     STAGE = TESTCONFIG["rot"]["stage_type"]
 
-    def __get_position(self, address):
-        # Blank get Position function
-        return 0
-
-    func_type = type(PISTAGES._get_position)
-    PISTAGES._get_position = func_type(__get_position, PISTAGES)
     PISTAGES.find_edge(address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE)
-    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012FE0\r"
+    assert PISTAGES.serial_interface._serial_commands[-1] == b"\x012TP\r"
 
 
 def test_set_home() -> None:
@@ -155,12 +143,6 @@ def test_get_position():
     STEPSIZE = TESTCONFIG["x_axis"]["step_size"]
     STAGE = TESTCONFIG["x_axis"]["stage_type"]
 
-    def __get_position(self, address):
-        # Blank get Position function
-        return 0
-
-    func_type = type(PISTAGES._get_position)
-    PISTAGES._get_position = func_type(__get_position, PISTAGES)
     assert (
         PISTAGES.get_position(
             address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE
@@ -173,12 +155,6 @@ def test_get_position():
     STEPSIZE = float(TESTCONFIG["rot"]["step_size"])
     STAGE = TESTCONFIG["rot"]["stage_type"]
 
-    def __get_position(self, address):
-        # Blank get Position function
-        return 0
-
-    func_type = type(PISTAGES._get_position)
-    PISTAGES._get_position = func_type(__get_position, PISTAGES)
     assert (
         PISTAGES.get_position(
             address=ADDRESS, unit=UNIT, stage=STAGE, step_size=STEPSIZE

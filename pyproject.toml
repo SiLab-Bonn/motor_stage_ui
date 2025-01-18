@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "coverage"]
+test = ["pytest", "coverage", "pytest-qt"]
 
 [project.urls]
 "Repository" = "https://github.com/SiLab-Bonn/motor_stage_ui"

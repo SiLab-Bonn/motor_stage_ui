@@ -1,7 +1,7 @@
 from motor_stage_ui.pi_stages_interface import PIStagesInterface
 from motor_stage_ui.pi_stages_interface import SerialInterface
+from motor_stage_ui.test.utils import SerialInterfaceMock
 from motor_stage_ui import logger
-import motor_stage_ui
 
 import yaml
 import logging
@@ -9,6 +9,7 @@ from PyQt5.QtCore import QSize, Qt, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLineEdit, QLabel
 import sys
 import os
+from pathlib import Path
 
 """
 
@@ -357,10 +358,19 @@ class MainWindow(QMainWindow):
 
 
 def main():
-    app = QApplication(sys.argv)
+    try:
+        if os.environ["TEST"]:
+            path = Path(__file__).parent / "test"
+            config_path = path / "test_configuration.yaml"
+            interface = SerialInterfaceMock
 
-    path = os.path.dirname(motor_stage_ui.__file__)
-    window = MainWindow(path + "/configuration.yaml")
+    except KeyError:
+        path = Path(__file__).parent
+        config_path = path / "configuration.yaml"
+        interface = SerialInterface
+
+    app = QApplication(sys.argv)
+    window = MainWindow(config_path, interface=interface)
     window.show()
 
     app.exec()

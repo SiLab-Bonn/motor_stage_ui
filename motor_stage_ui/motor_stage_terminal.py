@@ -1,6 +1,9 @@
 from motor_stage_ui.pi_stages_interface import PIStagesInterface as MC
 import motor_stage_ui
+from motor_stage_ui.pi_stages_interface import SerialInterface
+from motor_stage_ui.test.utils import SerialInterfaceMock
 
+from pathlib import Path
 import os
 import click
 import yaml
@@ -23,12 +26,24 @@ def motor(conf):
         Args:
             conf (str): Needs path to configuration yaml. This path is converted into a click object and passed to the individual functions.
     """
+    try:
+        if os.environ["TEST"]:
+            path = Path(__file__).parent / "test"
+            config_path = path / "test_configuration.yaml"
+            test = True
+
+    except KeyError:
+        path = Path(__file__).parent
+        config_path = path / "configuration.yaml"
+        test = False
 
     conf.ensure_object(dict)
-    path = os.path.dirname(motor_stage_ui.__file__)
-    config_path = path + "/configuration.yaml"
     with open(config_path, "r") as file:
         conf.obj["CONF"] = yaml.full_load(file)
+    if test:
+        conf.obj["MOCK"] = True
+    else:
+        conf.obj["MOCK"] = False
 
 
 @click.command()
@@ -40,9 +55,14 @@ def init(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.init_motor(conf.obj["CONF"][motor_name]["address"])
 
@@ -59,9 +79,14 @@ def move(conf, motor_name: str, a: str):
         motor_name (str): name of the motorstage
         a (str): Move amount
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.move_relative(
         conf.obj["CONF"][motor_name]["address"],
@@ -84,9 +109,14 @@ def moveto(conf, motor_name: str, a: str):
         motor_name (str): name of the motorstage
         a (str): Move to position
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.move_to_position(
         conf.obj["CONF"][motor_name]["address"],
@@ -106,9 +136,14 @@ def pos(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     click.echo(
         "Position of: "
@@ -119,7 +154,7 @@ def pos(conf, motor_name: str):
                 conf.obj["CONF"][motor_name]["address"],
                 conf.obj["CONF"][motor_name]["unit"],
                 conf.obj["CONF"][motor_name]["stage_type"],
-                conf.obj["CONF"][motor_name]["step_size"],
+                float(conf.obj["CONF"][motor_name]["step_size"]),
             )
         )
         + " "
@@ -136,9 +171,14 @@ def stop(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.abort(conf.obj["CONF"][motor_name]["address"])
 
@@ -152,9 +192,14 @@ def sethome(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.set_home(conf.obj["CONF"][motor_name]["address"])
 
@@ -168,9 +213,14 @@ def gohome(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
     mc.go_home(conf.obj["CONF"][motor_name]["address"])
 
@@ -184,11 +234,21 @@ def status(conf, motor_name: str):
     Args:
         motor_name (str): name of the motorstage
     """
+    if conf.obj["MOCK"]:
+        interface = SerialInterfaceMock
+    else:
+        interface = SerialInterface
     mc = MC(
         port=conf.obj["CONF"][motor_name]["port"],
         baud_rate=conf.obj["CONF"][motor_name]["baud_rate"],
+        interface=interface,
     )
-    mc.get_stat(conf.obj["CONF"][motor_name]["address"])
+    click.echo(
+        "Status of: "
+        + motor_name
+        + " "
+        + str(mc.get_stat(conf.obj["CONF"][motor_name]["address"]))
+    )
 
 
 motor.add_command(init)

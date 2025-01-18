@@ -199,9 +199,8 @@ class PIStagesInterface:
             address (int): Address of the motorstage
         """
         err_msg = self._write_read("TS", address)
-        self.log.warning(
-            "Status of motor stage with address %i: %s" % (address, err_msg)
-        )
+        self.log.debug("Status of motor stage with address %i: %s" % (address, err_msg))
+        return err_msg
 
     def abort(self, address: int) -> None:
         """Stops all movement of the motorstage.
@@ -269,7 +268,7 @@ class PIStagesInterface:
             address (int): Address of the motorstage
             unit (str): output unit
             stage (int): stage type either 'rotation' or translation
-            step_size (int): step size of the motorstage given in deg or um
+            step_size (float): step size of the motorstage given in deg or um
 
         Returns:
             str: current position of motorstage in unit 3 digits precision respectively
