@@ -1,5 +1,7 @@
 # Motor stage UI
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) ![Tests](https://github.com/SiLab-Bonn/motor_stage_ui/tree/ui_tests/.github/tests/badge.svg) ![pre-commit](https://github.com/SiLab-Bonn/motor_stage_ui/tree/ui_tests/.github/pre_commit/badge.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+[![Status](https://github.com/SiLab-Bonn/motor_stage_ui/tree/ui_tests/.github/workflows/Tests/badge.svg)](https://github.com/SiLab-Bonn/motor_stage_ui/actions)
 
 Offers both a terminal and graphical user interface for the [C-863 Mercury controller](https://www.le.infn.it/~chiodini/allow_listing/pi/Manuals/C-863_UserManual_MS205E200.pdf) (Check also the [commands](https://twiki.cern.ch/twiki/bin/viewfile/ILCBDSColl/Phase2Preparations?rev=1;filename=MercuryNativeCommands_MS176E101.pdf)).
 Motor stages can be arranged in daisy chains.
@@ -62,7 +64,7 @@ The step size of a specific stage is given in um for translation stages and deg 
 
 ## Tests
 
-General UI tests, utilizing a motor controller mock, are performed when setting the environmental variable 'TEST' e.g.:
+General UI tests, utilizing a motor controller mock, are performed when setting the environmental variable `TEST` e.g.:
 
 ```bash
 TEST=True motor init x_axis

@@ -1,15 +1,24 @@
+name: Tests
+
 on:
   pull_request:
   push:
     branches: [main, ui_tests]
 
 jobs:
-  pytest:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
-      - name: Tests
-        run: |
-          pip install -e .[test]
-          pytest -sv
+    pre-commit:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-python@v3
+        - uses: pre-commit/action@v3.0.1
+
+
+    pytest:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-python@v3
+            - run: |
+                pip install -e .[test]
+                pytest -sv
