@@ -1,5 +1,6 @@
 # Motor stage UI
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests](https://github.com/SiLab-Bonn/motor_stage_ui/actions/workflows/tests.yml/badge.svg)](https://github.com/SiLab-Bonn/motor_stage_ui/actions/workflows/tests.yml)
 
 Offers both a terminal and graphical user interface for the [C-863 Mercury controller](https://www.le.infn.it/~chiodini/allow_listing/pi/Manuals/C-863_UserManual_MS205E200.pdf) (Check also the [commands](https://twiki.cern.ch/twiki/bin/viewfile/ILCBDSColl/Phase2Preparations?rev=1;filename=MercuryNativeCommands_MS176E101.pdf)).
 Motor stages can be arranged in daisy chains.
@@ -58,3 +59,21 @@ The step size of a specific stage is given in um for translation stages and deg 
 | `stop` | `Stop` | Immediately stops all movement of the stage | motor_name (str): name of the motorstage | - |
 | `sethome` | `Set Zero` | Sets the current position of the stage as new origin | motor_name (str): name of the motorstage | - |
 | `gohome` | `MV. Zero` | Goes to origin of the stage | motor_name (str): name of the motorstage | - |
+| `status` | -` | Returns the status of the motor controller | motor_name (str): name of the motorstage | - |
+
+## Tests
+
+General UI tests, utilizing a motor controller mock, are performed when setting the environmental variable `TEST` e.g.:
+
+```bash
+TEST=True motor init x_axis
+```
+
+```bash
+TEST=True motorgui
+```
+Utilizing [pytest](https://docs.pytest.org/en/stable/) the mock tests the software.
+
+```bash
+pytest -sv
+```

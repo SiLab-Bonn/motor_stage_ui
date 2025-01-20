@@ -199,9 +199,8 @@ class PIStagesInterface:
             address (int): Address of the motorstage
         """
         err_msg = self._write_read("TS", address)
-        self.log.warning(
-            "Status of motor stage with address %i: %s" % (address, err_msg)
-        )
+        self.log.debug("Status of motor stage with address %i: %s" % (address, err_msg))
+        return err_msg
 
     def abort(self, address: int) -> None:
         """Stops all movement of the motorstage.
@@ -269,7 +268,7 @@ class PIStagesInterface:
             address (int): Address of the motorstage
             unit (str): output unit
             stage (int): stage type either 'rotation' or translation
-            step_size (int): step size of the motorstage given in deg or um
+            step_size (float): step size of the motorstage given in deg or um
 
         Returns:
             str: current position of motorstage in unit 3 digits precision respectively
@@ -329,7 +328,7 @@ class PIStagesInterface:
         return msg
 
     def _calculate_value(
-        self, amount: str, unit: str, stage: str, step_size: float
+        self, amount: str, unit: str, stage: str, step_size: float | str
     ) -> int:
         """Calculates number of motor steps from a given input amount and the given units
 
@@ -344,12 +343,12 @@ class PIStagesInterface:
         """
         if stage == "translation":
             try:
-                pos = self.ureg(amount).to("um").magnitude / step_size
+                pos = self.ureg(amount).to("um").magnitude / float(step_size)
             except:
-                pos = self.ureg(amount + unit).to("um").magnitude / step_size
+                pos = self.ureg(amount + unit).to("um").magnitude / float(step_size)
         if stage == "rotation":
             try:
-                pos = self.ureg(amount).to("deg").magnitude / step_size
+                pos = self.ureg(amount).to("deg").magnitude / float(step_size)
             except:
-                pos = self.ureg(amount + unit).to("deg").magnitude / step_size
+                pos = self.ureg(amount + unit).to("deg").magnitude / float(step_size)
         return pos

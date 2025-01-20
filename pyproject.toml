@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "motor_stage_ui"
-version = "1.1"
+version = "1.2.0"
 license = { "text" = "AGPL-3.0" }
 description = "User interface for the Mercury motor controller"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "coverage"]
+test = ["pytest", "coverage", "pytest-qt"]
 
 [project.urls]
 "Repository" = "https://github.com/SiLab-Bonn/motor_stage_ui"

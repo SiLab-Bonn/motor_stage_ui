@@ -37,6 +37,8 @@ class SerialInterfaceMock:
             str: message
         """
         msg = self._serial_commands[-1].decode().strip().replace(self._terminator, "")
+        if msg[-2:] == "TP":
+            msg = "0.000"
         if msg == "":
             self.log.error("No responds from serial interface.")
             raise ValueError
