@@ -328,7 +328,7 @@ class PIStagesInterface:
         return msg
 
     def _calculate_value(
-        self, amount: str, unit: str, stage: str, step_size: float
+        self, amount: str, unit: str, stage: str, step_size: float | str
     ) -> int:
         """Calculates number of motor steps from a given input amount and the given units
 
@@ -343,12 +343,12 @@ class PIStagesInterface:
         """
         if stage == "translation":
             try:
-                pos = self.ureg(amount).to("um").magnitude / step_size
+                pos = self.ureg(amount).to("um").magnitude / float(step_size)
             except:
-                pos = self.ureg(amount + unit).to("um").magnitude / step_size
+                pos = self.ureg(amount + unit).to("um").magnitude / float(step_size)
         if stage == "rotation":
             try:
-                pos = self.ureg(amount).to("deg").magnitude / step_size
+                pos = self.ureg(amount).to("deg").magnitude / float(step_size)
             except:
-                pos = self.ureg(amount + unit).to("deg").magnitude / step_size
+                pos = self.ureg(amount + unit).to("deg").magnitude / float(step_size)
         return pos
