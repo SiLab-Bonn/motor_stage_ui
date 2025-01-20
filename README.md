@@ -59,7 +59,7 @@ The step size of a specific stage is given in um for translation stages and deg 
 | `stop` | `Stop` | Immediately stops all movement of the stage | motor_name (str): name of the motorstage | - |
 | `sethome` | `Set Zero` | Sets the current position of the stage as new origin | motor_name (str): name of the motorstage | - |
 | `gohome` | `MV. Zero` | Goes to origin of the stage | motor_name (str): name of the motorstage | - |
-| `status` | -` | Returns the status of the motor controller | motor_name (str): name of the motorstage | - |
+| `status` | - | Returns the status of the motor controller | motor_name (str): name of the motorstage | - |
 
 ## Tests
 
@@ -72,7 +72,14 @@ TEST=True motor init x_axis
 ```bash
 TEST=True motorgui
 ```
-Utilizing [pytest](https://docs.pytest.org/en/stable/) the mock tests the software.
+[Pytest](https://docs.pytest.org/en/stable/) is used to test the software.
+Here, a serial interface mock is used.
+Install test dependencies with:
+
+```bash
+pip install -e .[test]
+```
+and test the software with logging:
 
 ```bash
 pytest -sv
