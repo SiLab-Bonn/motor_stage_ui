@@ -13,6 +13,13 @@ cd motor_stage_ui
 pip install -e .
 ```
 
+### Rocky 9
+On Rocky 9 you need the additional Python ```qt5``` package:
+
+```bash
+sudo dnf install python3-qt5
+```
+
 ## Usage
 
 Configure your specific stage setup in ```motor_stage_ui/configuration.yaml```.
